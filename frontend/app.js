@@ -8,16 +8,34 @@ document.getElementById("root").innerHTML = `
 `;
 
 async function checkPlagiarism() {
-    const text = document.getElementById("inputText").value;
+  const text = document.getElementById("textInput").value;
+  const result = document.getElementById("result");
 
-    const response = await fetch("http://localhost:8000/check", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: text })
+  if (!text.trim()) {
+    result.innerText = "Please enter some text.";
+    return;
+  }
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/check", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ text: text })
     });
 
     const data = await response.json();
-    document.getElementById("result").textContent =
-        "Plagiarism Score: " + data.plagiarism_score + "%\n" +
-        "Risk Level: " + data.risk;
+
+    if (data.risk === "High") {
+      result.innerText = `⚠️ Plagiarism Detected (${data.plagiarism_score}%)`;
+    } else {
+      result.innerText = `✅ No Plagiarism Detected (${data.plagiarism_score}%)`;
+    }
+
+  } catch (error) {
+    result.innerText = "Error connecting to backend.";
+    console.error(error);
+  }
 }
+
