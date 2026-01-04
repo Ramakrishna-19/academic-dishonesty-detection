@@ -17,12 +17,12 @@ async function checkPlagiarism() {
   }
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/check", {
+    const response = await fetch("/check", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ text: text })
+      body: JSON.stringify({ text })
     });
 
     const data = await response.json();
@@ -38,4 +38,3 @@ async function checkPlagiarism() {
     console.error(error);
   }
 }
-
